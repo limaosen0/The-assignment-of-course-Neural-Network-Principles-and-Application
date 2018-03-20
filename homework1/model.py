@@ -24,6 +24,27 @@ def classifier(input_data, hidden_dim, activation_fn, normalizer_fn, scope_name)
 	return h2, out
 
 
+# def classifier(input_data, hidden_dim, keep_prob):
+
+# 	w_init = tf.contrib.layers.variance_scaling_initializer()
+# 	b_init = tf.constant_initializer(0.)
+
+# 	w0 = tf.Variable(tf.random_normal(shape=[310, hidden_dim], mean=0, stddev=0.2))
+# 	b0 = tf.Variable(tf.random_normal(shape=[hidden_dim], mean=0, stddev=0.1))
+# 	h0 = tf.matmul(input_data, w0) + b0
+# 	h0 = tf.nn.elu(h0)
+# 	h0 = tf.nn.dropout(h0, keep_prob)
+
+# 	w1 = tf.Variable(tf.random_normal(shape=[hidden_dim, 3], mean=0, stddev=0.2))
+# 	b1 = tf.Variable(tf.random_normal(shape=[3], mean=0, stddev=0.1))
+# 	h1 = tf.matmul(h0, w1) + b1
+
+# 	out = tf.nn.softmax(h1)
+
+# 	return h1, out
+
+
+
 class EmotionClassifier(object):
 	def __init__(self, sess, args):
 		self.sess = sess
@@ -44,11 +65,11 @@ class EmotionClassifier(object):
 
 		self.train_ = tf.placeholder(tf.float32,[None, self.data_dim], name='train_data')
 		self.train_label = tf.placeholder(tf.int32, [None, 3], name='train_label')
-		self.h2, self.predict = self.classifier(self.train_, self.hidden_dim, activation_fn=tf.nn.relu, normalizer_fn=None, scope_name='classifier')
+		self.h2, self.predict = self.classifier(self.train_, self.hidden_dim, activation_fn=tf.nn.elu, normalizer_fn=None, scope_name='classifier')
 
 		self.test_ = tf.placeholder(tf.float32,[None, self.data_dim], name='test_data')
 		self.test_label = tf.placeholder(tf.int32, [None, 3], name='test_label')
-		self.h2_, self.predict_ = self.classifier(self.test_, self.hidden_dim, activation_fn=tf.nn.relu, normalizer_fn=None, scope_name='classifier')
+		self.h2_, self.predict_ = self.classifier(self.test_, self.hidden_dim, activation_fn=tf.nn.elu, normalizer_fn=None, scope_name='classifier')
 
 		self.train_loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(self.train_label, self.h2))
 		self.test_loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(self.test_label, self.h2_))
@@ -104,19 +125,27 @@ class EmotionClassifier(object):
 				                                                   feed_dict={self.train_: batch_train_data, self.train_label: batch_train_label, self.l_rate:lr})
 				training_acc_rate = training_acc_sum/self.batch_size
 				print("Epoch: [%2d] [%5d] loss:[%g] acc:[%g] time: %4.4f" % (epoch, counter, training_loss, training_acc_rate, time.time()-start_time))
-				counter += 1
+				
+				f1 = open(os.path.join(self.result_dir, ('./training_loss_%d.txt')%self.hidden_dim),'a')
+				f1.write('%d\t%g\n'%(counter, training_loss))
+				f1.close()
 
 				if np.mod(counter, args.print_freq) == 0:
-					valid_acc_rate = self.sample_model(valid_pair)
+					valid_acc_rate, valid_loss = self.sample_model(valid_pair)
+					f2 = open(os.path.join(self.result_dir, ('./validition_loss_%d.txt')%self.hidden_dim),'a')
+					f2.write('%d\t%g\n'%(counter, valid_loss))
+					f2.close()
 
 				if np.mod(counter, args.print_freq) == 0:
 					test_acc_rate = self.test_model(test_data_label_pair)
-					f1 = open(os.path.join(self.result_dir, ('./test_accuracy_%d.txt')%self.hidden_dim),'a')
-					f1.write('%d\t%g\n'%(counter, test_acc_rate))
-					f1.close()
+					f3 = open(os.path.join(self.result_dir, ('./test_accuracy_%d.txt')%self.hidden_dim),'a')
+					f3.write('%d\t%g\n'%(counter, test_acc_rate))
+					f3.close()
 					
 				if np.mod(counter, args.save_freq) == 0:
 					self.save(self.checkpoint_dir, counter)
+
+				counter += 1
 
 
 	def save(self, checkpoint_dir, step):
@@ -167,7 +196,7 @@ class EmotionClassifier(object):
 
 		valid_acc_rate = valid_acc_sum / valid_num
 		print('------------>Valid loss: %g, ------------>Valid acc: %g'%(valid_loss, valid_acc_rate))
-		return valid_acc_rate
+		return valid_acc_rate, valid_loss
 
 
 	def test_model(self, test_pair):

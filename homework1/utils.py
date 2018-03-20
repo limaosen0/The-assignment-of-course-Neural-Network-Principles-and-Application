@@ -5,6 +5,7 @@ import numpy as np
 import os
 import scipy.io
 
+
 def data_load(input_data):
 
 	data = scipy.io.loadmat(input_data)
@@ -13,6 +14,8 @@ def data_load(input_data):
 	data_shape = data_value.shape
 	data_num = data_shape[0]
 	data_dim = data_shape[1]
+	if data_dim > 3:
+		data_value = ((np.array(data_value)-12.9605)/(44.1745-12.9605)-0.5)*2
 
 	return np.array(data_value), data_num, data_dim
 
