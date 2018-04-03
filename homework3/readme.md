@@ -17,6 +17,8 @@ You can also build your network without using any deep learning tools, which is 
 option
 
 B) Solving the ten-class classification problem using CNN.
-(a) You need to implement LeNet[1] and use it to solve this problem.
+(a) You need to implement LeNet-5 and use it to solve this problem.
 (b) Compare the results and training time with problem 1.
 (c) Visualize the deep features which can be extracted before feed-forward layers, and discuss the results. 
+
+Here is our code. The dataset can be downloaded automatically the first time when you run the code. You need to run the file main.py with deterministing that the argument of '--layer_num' is equal to your model's layers number. Our program would generate the training/validation loss value and classification accuracy during training.
