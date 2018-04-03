@@ -21,4 +21,8 @@ B) Solving the ten-class classification problem using CNN.
 (b) Compare the results and training time with problem 1.
 (c) Visualize the deep features which can be extracted before feed-forward layers, and discuss the results. 
 
-Here is our code. The dataset can be downloaded automatically the first time when you run the code. You need to run the file main.py with deterministing that the argument of '--layer_num' is equal to your model's layers number. Our program would generate the training/validation loss value and classification accuracy during training.
+Here is our code. The dataset can be downloaded automatically the first time when you run the code. 
+
+When you train the model, you need to run the file main.py with deterministing that the argument '--layer_num' equals to your model's layers number and '--phase' equals to 'train'. Our program would generate the training/validation loss value and classification accuracy during training.
+
+When you test the model, keep all the arguments unchanged except for '--phase = "test"'. The program would output the final test accuracy and the deep mean feature map of LeNet-5 model.
