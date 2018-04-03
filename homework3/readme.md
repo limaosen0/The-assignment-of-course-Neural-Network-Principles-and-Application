@@ -8,7 +8,7 @@ Two problems are given below. The dataset used in this homework is the MNIST
 database (Modified National Institute of Standards and Technology database), which is
 commonly used for training and testing in the field of machine learning. 
 
-a) Solving the ten-class classification problem in the given dataset using feedforward
+A) Solving the ten-class classification problem in the given dataset using feedforward
 neural network. You need to finetune your network and only present your best
 result.
 
@@ -16,11 +16,7 @@ Notice: You can either use tensorflow or other deep learning tools to solve this
 You can also build your network without using any deep learning tools, which is a better
 option
 
-b) Solving the ten-class classification problem using CNN.
-
+B) Solving the ten-class classification problem using CNN.
 (a) You need to implement LeNet[1] and use it to solve this problem.
-
 (b) Compare the results and training time with problem 1.
-
-(c) Visualize the deep features which can be extracted before feed-forward layers,
-and discuss the results. 
+(c) Visualize the deep features which can be extracted before feed-forward layers, and discuss the results. 
