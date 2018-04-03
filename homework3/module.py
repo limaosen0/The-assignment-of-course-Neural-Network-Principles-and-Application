@@ -34,7 +34,7 @@ def nn_classifier(input_data, hidden_dim, activation_fn, normalizer_fn, scope_na
 	if dropout:
 		h5 = tf.nn.dropout(h5, keep_prob)
 
-	h6 = tf.contrib.layers.fully_connected(h4, 10, activation_fn=None,\
+	h6 = tf.contrib.layers.fully_connected(h5, 10, activation_fn=None,\
 		                                       normalizer_fn=None)
 	out = softmax(h6)
 
